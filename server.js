@@ -12,16 +12,15 @@ server.get('/', (req, res) => {
     res.status(200).json('Home Page up and running')
 });
 
-server.post('/api/users', (req, res) => {
+server.post('/api/register', (req, res) => {
     const userInfo = req.body;
-
+    const hash = bcrypt.hashSync(userInfo.password, 12);
+    userInfo.password = hash;
     db('users')
     .insert(userInfo)
-    .then(
-        ids => {
-            res.status(201).json(ids)
-        }
-    )
+    .then(ids => {
+        res.status(201).json(ids)
+    })
     .catch(err => res.json(err))
 })
 
