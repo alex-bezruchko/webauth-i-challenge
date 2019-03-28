@@ -3,9 +3,20 @@ const server = express();
 const knex = require('knex');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const sessionConfig = {
+    name: 'CookieName',
+    secret: 'CookieSecret',
+    cookie: {
+        maxAge: 1000 * 60 * 2,
+        secure: false
+    },
+    httpOnly: true,
+    resave: false,
+    saveUninitialized: false,
 
+}
 server.use(express.json());
-
+server.use(session(sessionConfig));
 const knexConfig = require('./knexfile');
 
 const db = knex(knexConfig.development);
