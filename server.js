@@ -21,16 +21,8 @@ const knexConfig = require('./knexfile');
 
 const db = knex(knexConfig.development);
 
-function restricted(req,res,next) {
-    if (req.session && req.session.user) {
-        next()
-    }
-    else {
-        res.status(401).json({message: 'This page is restricted to registered users'})
-    }
-    
-}
-server.get('/', (req, res) => {
+
+server.get('/', restricted, (req, res) => {
     res.status(200).json('Home Page up and running')
 });
 
@@ -48,10 +40,10 @@ server.post('/api/register', (req, res) => {
 
 server.post('/api/login', (req, res) => {
     let { username, password } = req.body;
-  
     db('users').where({ username })
       .first()
       .then(user => {
+        req.session.username = user.username;
         if (user && bcrypt.compareSync(password, user.password)) {
           res.status(200).json({ message: `Welcome ${user.username}!` });
         } else {
@@ -63,7 +55,7 @@ server.post('/api/login', (req, res) => {
       });
   });
 
-server.get('/api/users', restricted, (req, res) => {
+server.get('/api/users', (req, res) => {
     // const hash = bcrypt.hashSync(password, 10)
 
     // username.password = hash;
@@ -73,5 +65,13 @@ server.get('/api/users', restricted, (req, res) => {
     })
     .catch(err => res.json(err))
 })
-
+function restricted(req,res,next) {
+    if (req.session && req.session.user) {
+        next()
+    }
+    else {
+        res.status(401).json({message: 'This page is restricted to unregistered users'})
+    }
+    
+}
 module.exports = server;
