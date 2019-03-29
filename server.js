@@ -4,8 +4,8 @@ const knex = require('knex');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const sessionConfig = {
-    name: 'CookieName',
-    secret: 'CookieSecret',
+    name: 'cookie',
+    secret: 'secret',
     cookie: {
         maxAge: 1000 * 60 * 2,
         secure: false
