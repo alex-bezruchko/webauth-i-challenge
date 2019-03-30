@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const helmet = require('helmet');
 const cors = require('cors');
-
+server.use(cors())
 // const { protected } = require("./middleware/auth");
 // server.use("/api/restricted", protected);
 
